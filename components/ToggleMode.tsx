@@ -23,11 +23,11 @@ export default function ToggleMode() {
     const dark = theme === "dark";
 
     return (
-        <Button variant="outline" size='icon' onClick={() => setTheme(`${dark ? "light" : "dark"}`)}>
+        <Button className='cursor-pointer' variant="outline" size='icon' onClick={() => setTheme(`${dark ? "light" : "dark"}`)}>
             {dark ? (
-                <Sun className='cursor-pointer hover:text-primary' />
+                <Sun className='hover:cursor-pointer hover:text-primary' />
             ) : (
-                <Moon className='cursor-pointer hover:text-primary' />
+                <Moon className='hover:cursor-pointer hover:text-primary' />
             )}
         </Button>
     )
