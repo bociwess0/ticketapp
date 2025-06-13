@@ -1,5 +1,6 @@
 import React from 'react'
 import prisma from '@/prisma/db'
+import DataTable from './DataTable';
 
 export default async function Tickets() {
 
@@ -9,7 +10,7 @@ export default async function Tickets() {
 
   return (
     <div>
-      Tickets
+      <DataTable tickets={tickets} />
     </div>
   )
 }
