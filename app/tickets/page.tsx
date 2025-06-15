@@ -3,6 +3,7 @@ import prisma from '@/prisma/db'
 import DataTable from './DataTable';
 import { buttonVariants } from '@/components/ui/button';
 import Link from 'next/link';
+import Pagination from '@/components/Pagination';
 
 export default async function Tickets() {
 
@@ -12,6 +13,7 @@ export default async function Tickets() {
     <div>
       <Link href='/tickets/new' className={buttonVariants({variant: "default"})}>New Ticket</Link>
       <DataTable tickets={tickets} />
+      <Pagination itemCount={26} pageSize={10} currentPage={1} />
     </div>
   )
 }
