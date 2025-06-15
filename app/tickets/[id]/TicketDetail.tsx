@@ -13,6 +13,8 @@ import TicketStatusBadge from '@/components/TicketStatusBadge'
 import TicketPriority from '@/components/TicketPriority'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
+import ReactMarkdown from 'react-markdown'
+import DeleteTicketButton from './DeleteTicketButton'
 
 interface Props {
     ticket: Ticket
@@ -40,8 +42,8 @@ export default function TicketDetail({ticket}: Props) {
                 })}</CardDescription>
                 <CardAction>Card Action</CardAction>
             </CardHeader>
-            <CardContent>
-                <p>{ticket.description}</p>
+            <CardContent className='prose dark:prose-invert'>
+                <ReactMarkdown>{ticket.description}</ReactMarkdown>
             </CardContent>
             <CardFooter>
                 Updated: {ticket.createdAt.toLocaleDateString("en-US", {
@@ -58,9 +60,7 @@ export default function TicketDetail({ticket}: Props) {
             <Link href={`/tickets/edit/${ticket.id}`} className={`${buttonVariants({
                 variant: "default"
             })}`} >Edit Ticket</Link>
-            <Link href={`/tickets/edit/${ticket.id}`} className={`${buttonVariants({
-                variant: "default"
-            })}`} >Delete Ticket</Link>
+            <DeleteTicketButton ticketId={ticket.id} />
         </div>
     </div>
   )
