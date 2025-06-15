@@ -35,6 +35,7 @@ const Pagination = ({ itemCount, pageSize, currentPage }: Props) => {
           variant="outline"
           disabled={currentPage === 1}
           onClick={() => changePage(1)}
+          className="cursor-pointer"
         >
           <ChevronFirst />
         </Button>
@@ -42,6 +43,7 @@ const Pagination = ({ itemCount, pageSize, currentPage }: Props) => {
           variant="outline"
           disabled={currentPage === 1}
           onClick={() => changePage(currentPage - 1)}
+          className="cursor-pointer"
         >
           <ChevronLeft />
         </Button>
@@ -49,6 +51,7 @@ const Pagination = ({ itemCount, pageSize, currentPage }: Props) => {
           variant="outline"
           disabled={currentPage === pageCount}
           onClick={() => changePage(currentPage + 1)}
+          className="cursor-pointer"
         >
           <ChevronRight />
         </Button>
@@ -56,6 +59,7 @@ const Pagination = ({ itemCount, pageSize, currentPage }: Props) => {
           variant="outline"
           disabled={currentPage === pageCount}
           onClick={() => changePage(pageCount)}
+          className="cursor-pointer"
         >
           <ChevronLast />
         </Button>
