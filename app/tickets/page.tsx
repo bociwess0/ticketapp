@@ -21,7 +21,7 @@ export default async function Tickets({searchParams}: { searchParams: SearchPara
   const page = parseInt(searchParams.page) || 1;
   const ticketCount = await prisma.ticket.count();
 
-  
+  const OrderBy = searchParams.orderBy ? searchParams.orderBy : "createdAt";
 
   const statuses = Object.values(Status)
   const status = statuses.includes(searchParams.status) ? searchParams.status : undefined;
@@ -32,14 +32,13 @@ export default async function Tickets({searchParams}: { searchParams: SearchPara
     where = {
       status
     }
-  } else {
-    where = {
-      NOT: [{status: "CLOSED" as Status}]
-    }
   }
 
   const tickets = await prisma?.ticket.findMany({
     where,
+    orderBy: {
+      [OrderBy]: "desc",
+    },
     take: pageSize,
     skip: (page - 1) * pageSize
   });
@@ -55,7 +54,7 @@ export default async function Tickets({searchParams}: { searchParams: SearchPara
         </Link>
         <StatusFilter />
       </div>
-      <DataTable tickets={tickets} searchParams={searchParams}/>
+      <DataTable tickets={tickets} page={searchParams.page} status={searchParams.status}  orderBy={searchParams.orderBy}/>
       <Pagination
         itemCount={ticketCount}
         pageSize={pageSize}
