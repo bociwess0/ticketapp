@@ -1,4 +1,4 @@
-import { Ticket } from '@prisma/client'
+import { Ticket, User } from '@prisma/client'
 import React from 'react'
 import {
   Card,
@@ -15,12 +15,14 @@ import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
 import ReactMarkdown from 'react-markdown'
 import DeleteTicketButton from './DeleteTicketButton'
+import AssignTicket from '@/components/AssignTicket'
 
 interface Props {
-    ticket: Ticket
+    ticket: Ticket,
+    users: User[]
 }
 
-export default function TicketDetail({ticket}: Props) {
+export default function TicketDetail({ticket, users}: Props) {
 
 
   return (
@@ -57,6 +59,7 @@ export default function TicketDetail({ticket}: Props) {
             </CardFooter>
         </Card>
         <div className='mx-4 flex lg:flex-col lg:mx-0 gap-3'>
+            <AssignTicket ticket={ticket} users={users} />
             <Link href={`/tickets/edit/${ticket.id}`} className={`${buttonVariants({
                 variant: "default"
             })}`} >Edit Ticket</Link>
