@@ -10,9 +10,12 @@ export default async function Users() {
   const users = await prisma.user.findMany();
   const session = await getServerSession(options);
 
+  if(session?.user.role !== "ADMIN") {
+    return <p className='text-destructive'>Admin access required</p>
+  }
+
   return (
     <div className=''>
-      {session?.user.role}
       <UserForm />
       <DataTableSimple users={users} />
     </div>

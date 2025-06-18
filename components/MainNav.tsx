@@ -7,13 +7,11 @@ import options from '@/app/api/auth/[...nextauth]/options'
 
 export default async function MainNav() {
 
-  const session = await getServerSession(options);
-  console.log(session);
-  
+  const session = await getServerSession(options);  
 
   return (
     <div className='flex justify-between'>
-        <MainNavLinks />
+        <MainNavLinks role={session?.user.role}/>
         <div className='flex items-center gap-2'>
             {session ? (
               <Link href="/api/auth/signout?callbackUrl=/">Logout from {session.user.name}</Link>
