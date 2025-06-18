@@ -16,7 +16,7 @@ export default async function MainNav() {
         <MainNavLinks />
         <div className='flex items-center gap-2'>
             {session ? (
-              <Link href="/api/auth/signout?callbackUrl=/">Logout</Link>
+              <Link href="/api/auth/signout?callbackUrl=/">Logout from {session.user.name}</Link>
               ) : (
               <Link href="/api/auth/signin?callbackUrl=/">Login</Link>
               )}

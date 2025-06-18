@@ -106,6 +106,7 @@ export default function TicketForm({ticket}: Props) {
                 <Button type='submit' disabled={isSubmitting} className='cursor-pointer'>{ticket ? "Update Ticket" : "Create Ticket"}</Button>
             </form>
         </Form>
+        <p className='text-destructive'>{error}</p>
         </div>
     )
 }
