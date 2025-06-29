@@ -30,9 +30,22 @@ const options: NextAuthOptions = {
           user.password
         );
 
+        console.log({
+            id: user.id,
+            username: user.username,
+            name: user.name,
+            role: user.role
+          });
+        
+
         if (match) {
-          return user;
-        }
+          return {
+            id: user.id,
+            username: user.username,
+            name: user.name,
+            role: user.role
+          };
+        }        
 
         return null;
       },
@@ -40,15 +53,19 @@ const options: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, account, user }) {
+      
       if (account) {
         token.role = user.role;
-      }
+        token.id = user.id;
+      }      
       return token;
     },
     session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role || "USER";
-      }
+        session.user.id = token.id;
+        session.user.role = token.role || 'USER';
+        session.user.username = token.username as string;
+      }            
       return session;
     },
   },

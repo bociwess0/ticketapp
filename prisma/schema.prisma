@@ -21,6 +21,8 @@ model Ticket {
   updatedAt        DateTime @updatedAt
   assignedToUserId Int?
   assignedToUser   User?    @relation(fields: [assignedToUserId], references: [id])
+  cartItems        CartItem[]
+  orderItems       OrderItem[]
 }
 
 enum Status {
@@ -42,10 +44,55 @@ model User {
   password        String
   role            Role     @default(USER)
   assignedTickets Ticket[]
+  carts           Cart[]
+  orders          Order[]
 }
 
 enum Role {
   ADMIN
   TECH
   USER
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  user      User       @relation(fields: [userId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  items     CartItem[]
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  quantity  Int      @default(1) // Optional: if the same ticket can be added multiple times
+}
+
+model Order {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  user      User       @relation(fields: [userId], references: [id])
+  createdAt DateTime   @default(now())
+  total     Float
+  status    OrderStatus @default(PENDING)
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id])
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  quantity  Int      @default(1)
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
 }
