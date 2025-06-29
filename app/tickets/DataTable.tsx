@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import { addItemToCart } from '../redux/cartSlice'
+import { addItemToCart, deleteItemFromCart } from '../redux/cartSlice'
 
 interface Props {
   tickets: Ticket[],
@@ -25,11 +25,10 @@ interface CartObj {
     cartItems: CartItem[]
 }
 
-
 export default function DataTable({ tickets, page, status, orderBy }: Props) {
 
     const dispatch = useDispatch();
-
+    
     const addToCart = async (cartId: number, ticket: Ticket, quantity: number = 1) => {
         let ticketId = ticket.id;
         try {     
@@ -37,15 +36,15 @@ export default function DataTable({ tickets, page, status, orderBy }: Props) {
                 cartId,
                 ticketId,
                 quantity,
-            });
+            });            
                     
-        if (response.data.success) {
-            console.log('Ticket added to cart successfully!', response.data.cartItem);
-            dispatch(addItemToCart({cartItem: response.data.cartItem}))
-            toast.success(`${ticket.title} successfully added to cart`);
-        } else {
-            console.error('Failed to add ticket to cart.');
-            toast.error("Failed to add ticket to cart.")
+            if (response.data.success) {
+                console.log('Ticket added to cart successfully!', response.data.cartItem);
+                dispatch(addItemToCart({cartItem: response.data.cartItem}))
+                toast.success(`${ticket.title} successfully added to cart`);
+            } else {
+                console.error('Failed to add ticket to cart.');
+                toast.error("Failed to add ticket to cart.")
             }
         } catch (error) {
             console.error('Error adding ticket to cart:', error);
@@ -53,9 +52,23 @@ export default function DataTable({ tickets, page, status, orderBy }: Props) {
         }
     };
 
-    console.log(tickets);
+    const deleteFromCart = async(cartId: number, ticket: Ticket) => {
+        try {
+            const response = await axios.delete("/api/cart/tickets", { params: { cartId: cartId, ticketId: ticket.id }})
+            if(response.data.success) {
+                console.log("Ticket successfully deleted form cart!");
+                dispatch(deleteItemFromCart({id: ticket.id}))
+                toast.success(`${ticket.title} successfully deleted from cart`);
+            }else {
+                console.error('Failed to delete ticket from cart.');
+                toast.error("Failed to delete ticket from cart.")
+            }
+        } catch (error) {
+            console.error('Error while deliting ticket from cart:', error);
+            toast.error("Error while deliting ticket from cart.")
+        }
+    }
     
-
   return (
     <div className='w-full mt-5'>
         <div className='rounded-md sm:border'>
@@ -107,7 +120,13 @@ export default function DataTable({ tickets, page, status, orderBy }: Props) {
                                 hour12: true
                                 }) 
                                 : "N/A"}</TableCell>
-                            <TableCell><Button className='cursor-pointer' onClick={() => addToCart(2, ticket)}>Add to cart</Button></TableCell>
+                            <TableCell>
+                                {page === 'cart' ? (
+                                    <Button className='cursor-pointer' onClick={() => deleteFromCart(2, ticket)}>Delete ticket</Button>
+                                ): (
+                                    <Button className='cursor-pointer' onClick={() => addToCart(2, ticket)}>Add to cart</Button>
+                                )}
+                            </TableCell>
                         </TableRow>
                     )) : null}
                 </TableBody>

@@ -20,13 +20,15 @@ export default function Cart() {
         let ticketIds:number[] = [];
         
         ticketIds = cart.items.map((cartItem: CartItem) => {
-          return cartItem.id;
+          return cartItem.ticketId;
         })        
       
         async function getTicketsFromCart() {
           try {
             const response = await axios.get('api/cart/tickets', {params: {ticketIds: ticketIds.toString()}})
             setFoundTickets(response.data.tickets);
+            console.log(response.data.tickets);
+            
             console.log("Found tickets in cart:", response.data.tickets);
             
           } catch (error) {
@@ -36,15 +38,12 @@ export default function Cart() {
 
         getTicketsFromCart();
     }
-  }, [cart])  
-
-
-  console.log(foundTickets);
-  
+  }, [cart])    
   
   
   return (
     <div>
+      <div className='text-2xl'>Your Cart</div>
       {foundTickets.length > 0 && (
         <DataTable tickets={foundTickets} orderBy='createdAt' page='cart'/>
       )}

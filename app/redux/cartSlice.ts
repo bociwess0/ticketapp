@@ -1,5 +1,5 @@
 import { CartWithItems } from "@/types";
-import { Cart, CartItem } from "@prisma/client";
+import { Cart, CartItem, Ticket } from "@prisma/client";
 import {combineReducers, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const initialState: { cart: CartWithItems | null, totalItemsInCart: number } = {
@@ -18,6 +18,12 @@ const cartSlice = createSlice({
         addItemToCart: (state, action:PayloadAction<{cartItem: CartItem}>) => {
             state.cart?.items.push(action.payload.cartItem);
             state.totalItemsInCart++;
+        },
+        deleteItemFromCart:(state, action:PayloadAction<{id: number}>) => {
+            if (state.cart) {
+                state.cart.items = state.cart.items.filter((item) => item.ticketId !== action.payload.id);
+                state.totalItemsInCart = state.cart.items.length;
+            }   
         }
     }
 })
@@ -27,6 +33,7 @@ const rootReducer = combineReducers({});
 
 export const retrieveCart = cartSlice.actions.retrieveCart;
 export const addItemToCart = cartSlice.actions.addItemToCart;
+export const deleteItemFromCart = cartSlice.actions.deleteItemFromCart;
 export type RootStateCart = ReturnType<typeof rootReducer>;
 
 export default cartReducer;
