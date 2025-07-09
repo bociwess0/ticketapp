@@ -119,13 +119,16 @@ export default function DataTable({ tickets, page, status, orderBy }: Props) {
                                 hour12: true
                                 }) 
                                 : "N/A"}</TableCell>
-                            <TableCell>
-                                {page === 'cart' ? (
-                                    <Button className='cursor-pointer' onClick={() => deleteFromCart(ticket)}>Delete ticket</Button>
-                                ): (
-                                    <Button className='cursor-pointer' onClick={() => addToCart(ticket)}>Add to cart</Button>
+                                {page !== 'order' && (
+                                    <TableCell>
+                                        {page === 'cart' ? (
+                                            <Button className='cursor-pointer' onClick={() => deleteFromCart(ticket)}>Delete ticket</Button>
+                                        ): (
+                                            <Button className='cursor-pointer' onClick={() => addToCart(ticket)}>Add to cart</Button>
+                                        )}
+                                    </TableCell>
                                 )}
-                            </TableCell>
+                        
                         </TableRow>
                     )) : null}
                 </TableBody>

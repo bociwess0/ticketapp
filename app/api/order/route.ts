@@ -46,3 +46,47 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, message: "Error creating order" }, { status: 500 });
   }
 }
+
+export async function GET(request: NextRequest) {
+  try {
+    const session = await getServerSession(options);
+
+    if (!session || !session.user?.id) {
+      return NextResponse.json({ success: false, message: 'Not authenticated' }, { status: 401 });
+    }
+
+    const userId = parseInt(session.user.id as string, 10);
+    if (isNaN(userId)) {
+      return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
+    }
+
+    const orders = await prisma.order.findMany({ where: { userId: userId } });
+
+    if (!orders || orders.length === 0) {
+      return NextResponse.json({ success: false, message: "No orders found!" }, { status: 404 });
+    }
+
+    const ordersFormatted = await Promise.all(
+      orders.map(async (order) => {
+        const orderItems = await prisma.orderItem.findMany({
+          where: { orderId: order.id },
+        });
+
+        const tickets = await Promise.all(orderItems.map(async (orderItem) => {
+          return await prisma.ticket.findFirst({ where: { id: orderItem.ticketId }})
+        }))
+
+        return {
+          ...order,
+          tickets,
+        };
+      })
+    );
+
+    return NextResponse.json({ success: true, orders: ordersFormatted }, { status: 200 });
+
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ success: false, message: "Error fetching orders" }, { status: 500 });
+  }
+}
