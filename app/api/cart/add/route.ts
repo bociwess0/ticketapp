@@ -5,26 +5,35 @@ import { getServerSession } from 'next-auth';
 import options from '../../auth/[...nextauth]/options';
 
 export async function POST(request: NextRequest) {
-  console.log('API route hit');
   try {
-    const { cartId, ticketId, quantity } = await request.json();
-    console.log('Received data:', { cartId, ticketId, quantity });
-
-    const cart = await prisma.cart.findUnique({ where: { id: cartId } });
-    if (!cart) {
-      console.error('Cart not found');
-      return NextResponse.json({ success: false, message: 'Cart not found' }, { status: 404 });
+    const session = await getServerSession(options);
+    if (!session || !session.user?.id) {
+      return NextResponse.json({ success: false, message: 'Not authenticated' }, { status: 401 });
     }
+
+    const userId = parseInt(session.user.id as string, 10); 
+    if (isNaN(userId)) {
+      return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
+    }
+    const { ticketId, quantity } = await request.json();
 
     const ticket = await prisma.ticket.findUnique({ where: { id: ticketId } });
     if (!ticket) {
-      console.error('Ticket not found');
       return NextResponse.json({ success: false, message: 'Ticket not found' }, { status: 404 });
+    }
+
+    let cart = await prisma.cart.findFirst({ where: { userId: userId } });
+    if (!cart) {
+      cart = await prisma.cart.create({
+        data: {
+          userId: userId,
+        },
+      });
     }
 
     const cartItem = await prisma.cartItem.create({
       data: {
-        cart: { connect: { id: cartId } },
+        cart: { connect: { id: cart.id } },
         ticket: { connect: { id: ticketId } },
         quantity: quantity || 1,
       },
@@ -43,11 +52,7 @@ export async function GET(request: NextRequest) {
         const userId = searchParams.get("userId");
         const numericUserId = userId ? parseInt(userId, 10) : undefined;
 
-        console.log('Received userId:', userId);
-
-        const session = await getServerSession(options);
-
-        if (!session) {
+        if (!userId) {
             return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
         }
 
@@ -59,7 +64,7 @@ export async function GET(request: NextRequest) {
 
         const cartItems = await prisma.cartItem.findMany({ where: {cartId: cart.id}})
         if (!cartItems || cartItems.length === 0) {
-            return NextResponse.json({ success: false, message: "Cart is empty!" }, { status: 200 });
+            return NextResponse.json({ success: false, message: "Cart is empty!", emptyCart: true }, { status: 200 });
         }
 
         return NextResponse.json({ cart: cart, cartItems: cartItems }, { status: 200 });

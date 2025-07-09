@@ -4,8 +4,6 @@ import ToggleMode from './ToggleMode'
 import MainNavLinks from './MainNavLinks'
 import { getServerSession } from 'next-auth'
 import options from '@/app/api/auth/[...nextauth]/options'
-import { ShoppingCart } from 'lucide-react'
-import axios from 'axios'
 import CartMenuIcon from '@/app/cart/CartMenuIcon'
 
 export default async function MainNav() {

@@ -4,7 +4,7 @@ import { CartWithItems } from '@/types'
 import { Cart, CartItem } from '@prisma/client'
 import axios from 'axios'
 import { ShoppingCart } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { retrieveCart, RootStateCart } from '../redux/cartSlice'
 
@@ -14,33 +14,39 @@ interface Props {
 
 interface CartObj {
     cart: Cart,
-    cartItems: CartItem[]
+    cartItems: CartItem[],
 }
 
 export default function CartMenuIcon({userId}: Props) {
 
-    const [cartCount, setCartCount] = useState(0);
     const dispatch = useDispatch();
     const totalItemsInCart:number = useSelector((state: RootStateCart) => state.cartActions.totalItemsInCart);
-    const cartItems:CartItem[] = useSelector((state: RootStateCart) => state.cartActions.cartItems);
 
 
     useEffect(() => {
         const fetchCart = async () => {
-            try {
-                const response = await axios.get('/api/cart/add', { params: {userId: userId} });
-                const cartObj :CartObj = response.data;
-                const cartRedux: CartWithItems = {
-                    id: cartObj.cart.id,
-                    createdAt: cartObj.cart.createdAt,
-                    updatedAt: cartObj.cart.updatedAt,
-                    userId: cartObj.cart.userId,
-                    items: cartObj.cartItems
+            try {                
+                const response = await axios.get('/api/cart/add', { params: {userId: userId} });       
+                if (!response.data.cartEmpty && response.data.cart && response.data.cartItems) {
+                    const cartObj: CartObj = {
+                        cart: response.data.cart,
+                        cartItems: response.data.cartItems
+                    };
+
+                    const cartRedux: CartWithItems = {
+                        id: cartObj.cart.id,
+                        createdAt: cartObj.cart.createdAt,
+                        updatedAt: cartObj.cart.updatedAt,
+                        userId: cartObj.cart.userId,
+                        items: cartObj.cartItems
+                    };
+
+                    dispatch(retrieveCart({ cart: cartRedux }));
+                } else {
+                    console.log("Cart is empty or invalid response!", response.data);
                 }
-                setCartCount(cartObj.cartItems.length);
-                dispatch(retrieveCart({cart: cartRedux}));
             } catch (error) {
-                console.error('Error fetching cart:', error);
+                console.log('Error fetching cart:', error);
             }
         }
 
@@ -52,10 +58,8 @@ export default function CartMenuIcon({userId}: Props) {
     return (
         <div className="relative">
             <ShoppingCart />
-            {cartCount > 0 && (
-                <div className="bg-red-400 w-5 h-5 rounded-2xl absolute top-[-8px] 
+            <div className="bg-red-400 w-5 h-5 rounded-2xl absolute top-[-8px] 
                 right-[-13px] text-xs flex justify-center items-center">{totalItemsInCart}</div>
-            )}
         </div>
     )
 }

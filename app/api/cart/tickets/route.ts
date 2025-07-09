@@ -38,28 +38,25 @@ export async function DELETE(request:NextRequest) {
     try {
         const {searchParams} = new URL(request.url);
         const ticketId = searchParams.get("ticketId");
-        const cartId = searchParams.get("cartId");
-
-        if (!ticketId) {
-            return NextResponse.json({ error: "Missing ticketId" }, { status: 400 });
-        }
-
-        if (!cartId) {
-            return NextResponse.json({ error: "Missing cartId" }, { status: 400 });
-        }
 
         const session = await getServerSession(options);
 
         if (!session) {
             return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
         }
+        
+        const userId:number = parseInt(session.user.id as string, 10);
+        if(isNaN(userId)) {
+            return NextResponse.json({ success: false, message: 'Invalid user ID' }, { status: 400 });
+        }
 
-        const cart = await prisma.cart.findUnique({
-            where: {id: parseInt(cartId)}
-        })
-
+        const cart = await prisma.cart.findFirst({where: {userId: userId}})
         if (!cart) {
             return NextResponse.json({ error: "Cart does not exist" }, { status: 401 });
+        }
+
+        if (!ticketId) {
+            return NextResponse.json({ error: "Missing ticketId" }, { status: 400 });
         }
         
         await prisma.cartItem.deleteMany({

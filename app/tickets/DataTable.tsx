@@ -29,11 +29,10 @@ export default function DataTable({ tickets, page, status, orderBy }: Props) {
 
     const dispatch = useDispatch();
     
-    const addToCart = async (cartId: number, ticket: Ticket, quantity: number = 1) => {
+    const addToCart = async (ticket: Ticket, quantity: number = 1) => {
         let ticketId = ticket.id;
         try {     
             const response = await axios.post('/api/cart/add', {
-                cartId,
                 ticketId,
                 quantity,
             });            
@@ -52,9 +51,9 @@ export default function DataTable({ tickets, page, status, orderBy }: Props) {
         }
     };
 
-    const deleteFromCart = async(cartId: number, ticket: Ticket) => {
+    const deleteFromCart = async(ticket: Ticket) => {
         try {
-            const response = await axios.delete("/api/cart/tickets", { params: { cartId: cartId, ticketId: ticket.id }})
+            const response = await axios.delete("/api/cart/tickets", { params: { ticketId: ticket.id }})
             if(response.data.success) {
                 console.log("Ticket successfully deleted form cart!");
                 dispatch(deleteItemFromCart({id: ticket.id}))
@@ -122,9 +121,9 @@ export default function DataTable({ tickets, page, status, orderBy }: Props) {
                                 : "N/A"}</TableCell>
                             <TableCell>
                                 {page === 'cart' ? (
-                                    <Button className='cursor-pointer' onClick={() => deleteFromCart(2, ticket)}>Delete ticket</Button>
+                                    <Button className='cursor-pointer' onClick={() => deleteFromCart(ticket)}>Delete ticket</Button>
                                 ): (
-                                    <Button className='cursor-pointer' onClick={() => addToCart(2, ticket)}>Add to cart</Button>
+                                    <Button className='cursor-pointer' onClick={() => addToCart(ticket)}>Add to cart</Button>
                                 )}
                             </TableCell>
                         </TableRow>
