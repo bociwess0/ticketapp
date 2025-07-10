@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import options from "../auth/[...nextauth]/options";
-import { CartItem } from "@prisma/client";
+import { CartItem, Order } from "@prisma/client";
 import prisma from "@/prisma/db";
 
 export async function POST(request: NextRequest) {
@@ -88,5 +88,37 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error(error);
     return NextResponse.json({ success: false, message: "Error fetching orders" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request:NextRequest) {
+  try {
+      const {searchParams} = new URL(request.url);
+      const ticketId = parseInt(searchParams.get("ticketId") as string, 10)
+      const orderId = parseInt(searchParams.get("orderId") as string, 10)
+
+      const session = await getServerSession(options);
+      if(!session) {
+        return NextResponse.json({error: "Not authentificated" }, {status: 401});
+      }
+
+      const userId:number = parseInt(session.user.id as string, 10);
+      if(isNaN(userId)) {
+        return NextResponse.json({success: false, message: "Invalid user ID"}, {status: 400});
+      }
+
+      const order = await prisma.order.findFirst({where: {id: orderId, userId: userId}});
+
+      if(!order) {
+        return NextResponse.json({success: false, message: "Theres no orders for this user."}, {status: 400});
+      }
+
+      let deletedTicket = await prisma.orderItem.deleteMany({ where: {orderId: order.id, ticketId: ticketId}})
+
+      return NextResponse.json({success: true, message: "Ticket deleted from orders!", ticket: deletedTicket})
+
+  } catch (error) {
+      console.error(error);
+      return NextResponse.json({success: false, message: 'Error deleteing ticket from order'}, {status: 500})
   }
 }

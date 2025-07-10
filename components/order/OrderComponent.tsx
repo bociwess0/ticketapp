@@ -16,7 +16,7 @@ export default function OrderComponent({order, index}: Props) {
     <div className="mb-10" key={order.id}>
         <p className=''>Order {index + 1}</p>
         <div className='flex flex-col gap-5 items-end'>
-            <DataTable tickets={order.tickets} orderBy='createdAt' page='order'/>
+            <DataTable tickets={order.tickets} orderBy='createdAt' page='order' order={order}/>
         </div>
     </div>
   )

@@ -3,7 +3,7 @@
 import TicketPriority from '@/components/TicketPriority'
 import TicketStatusBadge from '@/components/TicketStatusBadge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Cart, CartItem, Ticket } from '@prisma/client'
+import { Cart, CartItem, Order, Ticket } from '@prisma/client'
 import Link from 'next/link'
 import React from 'react'
 import { ArrowDown } from 'lucide-react'
@@ -11,12 +11,14 @@ import { Button } from '@/components/ui/button'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '../redux/store'
 import { addToCart, deleteFromCart } from '@/requests/cartRequests'
+import { deleteOrderItem } from '@/requests/orderRequests'
 
 interface Props {
   tickets: Ticket[],
   page: string,
   status?: string,
   orderBy: string,
+  order?: Order
 }
 
 interface CartObj {
@@ -24,7 +26,7 @@ interface CartObj {
     cartItems: CartItem[]
 }
 
-export default function DataTable({ tickets, page, status, orderBy }: Props) {
+export default function DataTable({ tickets, page, status, orderBy, order }: Props) {
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -89,9 +91,9 @@ export default function DataTable({ tickets, page, status, orderBy }: Props) {
                                     </TableCell>
                                 )}
 
-                                {page === 'order' && (
+                                {page === 'order' && order && (
                                     <TableCell>
-                                        <Button className='cursor-pointer' onClick={() => addToCart(ticket, dispatch)}>Delete ticket</Button>
+                                        <Button className='cursor-pointer' onClick={() => deleteOrderItem(order.id, ticket)}>Delete ticket</Button>
                                     </TableCell>
                                 )}
                         
