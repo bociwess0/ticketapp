@@ -18,7 +18,6 @@ export default function Order() {
     async function getOrders() {
       try {
         const response = await axios.get('api/order');
-        console.log(response.data);
         setOrders(response.data.orders);
       } catch (error) {
         console.error('Error fetching orders:', error);
