@@ -30,7 +30,7 @@ export default function Order() {
   return (
     <div>
       {orders.length > 0 && orders.map((order, index) => (
-        <OrderComponent order={order} index={index} key={order.id} />
+        order.tickets.length > 0 && <OrderComponent order={order} index={index} key={order.id} />
       )) }
     </div>
   )

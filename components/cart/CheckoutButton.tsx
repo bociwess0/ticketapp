@@ -5,6 +5,9 @@ import { CartItem } from '@prisma/client'
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/app/redux/store';
+import { emptyCartRequest } from '@/requests/cartRequests';
 
 interface CartItems {
   cartItems: CartItem[]
@@ -13,6 +16,7 @@ interface CartItems {
 export default function CheckoutButton({cartItems}: CartItems) {
 
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   async function handleAddOrder() {
     if(!cartItems || cartItems.length === 0) {
@@ -28,6 +32,9 @@ export default function CheckoutButton({cartItems}: CartItems) {
         setTimeout(() => {
           router.push("/order");
         }, 500);
+
+        await emptyCartRequest(dispatch);
+
       } else {
         console.error('Failed to add order');
         toast.error("Failed to add ticket")

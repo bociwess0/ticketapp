@@ -24,6 +24,12 @@ const cartSlice = createSlice({
                 state.cart.items = state.cart.items.filter((item) => item.ticketId !== action.payload.id);
                 state.totalItemsInCart = state.cart.items.length;
             }   
+        },
+        emptyCart:(state) => {
+            if(state.cart) {
+                state.cart.items = [];
+                state.totalItemsInCart = 0;
+            }
         }
     }
 })
@@ -34,6 +40,7 @@ const rootReducer = combineReducers({});
 export const retrieveCart = cartSlice.actions.retrieveCart;
 export const addItemToCart = cartSlice.actions.addItemToCart;
 export const deleteItemFromCart = cartSlice.actions.deleteItemFromCart;
+export const emptyCart = cartSlice.actions.emptyCart;
 export type RootStateCart = ReturnType<typeof rootReducer>;
 
 export default cartReducer;

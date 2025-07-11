@@ -1,4 +1,4 @@
-import { addItemToCart, deleteItemFromCart } from "@/app/redux/cartSlice";
+import { addItemToCart, deleteItemFromCart, emptyCart } from "@/app/redux/cartSlice";
 import { AppDispatch } from "@/app/redux/store";
 import { Ticket } from "@prisma/client";
 import axios from "axios";
@@ -40,5 +40,18 @@ export const deleteFromCart = async(ticket: Ticket, dispatch:AppDispatch) => {
     } catch (error) {
         console.error('Error while deliting ticket from cart:', error);
         toast.error("Error while deliting ticket from cart.")
+    }
+}
+
+export const emptyCartRequest = async(dispatch:AppDispatch) => {
+    try {
+        const response = await axios.delete('api/cart/tickets', { params: { action: "emptyCart"} });
+        if(response.data.success) {
+            toast.success(response.data.message);
+            dispatch(emptyCart());
+        }
+    } catch (error) {
+        console.error('Failed to empty cart!');
+        toast.error("Failed to empty cart!")
     }
 }
