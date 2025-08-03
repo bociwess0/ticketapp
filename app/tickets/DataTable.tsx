@@ -3,7 +3,7 @@
 import TicketPriority from '@/components/TicketPriority'
 import TicketStatusBadge from '@/components/TicketStatusBadge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Cart, CartItem, Order, Ticket } from '@prisma/client'
+import { Order, Ticket } from '@prisma/client'
 import Link from 'next/link'
 import React from 'react'
 import { ArrowDown } from 'lucide-react'
@@ -19,11 +19,6 @@ interface Props {
   status?: string,
   orderBy: string,
   order?: Order
-}
-
-interface CartObj {
-    cart: Cart,
-    cartItems: CartItem[]
 }
 
 export default function DataTable({ tickets, page, status, orderBy, order }: Props) {

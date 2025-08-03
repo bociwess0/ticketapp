@@ -42,6 +42,8 @@ export default function CheckoutButton({cartItems}: CartItems) {
     } catch (error) {
       console.error('Failed while requiesting an order');
       toast.error("Failed while requiesting an order")
+      console.log(error);
+      
     }
 
   }

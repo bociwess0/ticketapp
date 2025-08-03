@@ -1,5 +1,5 @@
 import { CartWithItems } from "@/types";
-import { Cart, CartItem, Ticket } from "@prisma/client";
+import { CartItem } from "@prisma/client";
 import {combineReducers, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const initialState: { cart: CartWithItems | null, totalItemsInCart: number } = {
@@ -35,12 +35,18 @@ const cartSlice = createSlice({
 })
 
 const cartReducer = cartSlice.reducer;
-const rootReducer = combineReducers({});
+const rootReducer = combineReducers({
+    cart: cartReducer
+});
 
 export const retrieveCart = cartSlice.actions.retrieveCart;
 export const addItemToCart = cartSlice.actions.addItemToCart;
 export const deleteItemFromCart = cartSlice.actions.deleteItemFromCart;
 export const emptyCart = cartSlice.actions.emptyCart;
-export type RootStateCart = ReturnType<typeof rootReducer>;
+
+
+export type RootStateCart = {
+  cart: ReturnType<typeof cartReducer>;
+};
 
 export default cartReducer;

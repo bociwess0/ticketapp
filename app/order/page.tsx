@@ -2,7 +2,6 @@
 
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import DataTable from '../tickets/DataTable';
 import type { Order, Ticket } from '@prisma/client';
 import OrderComponent from '@/components/order/OrderComponent';
 

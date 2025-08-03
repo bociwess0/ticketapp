@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import options from "../../auth/[...nextauth]/options";
 import prisma from "@/prisma/db";
-import { Ticket } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
     try {

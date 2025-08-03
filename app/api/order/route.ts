@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import options from "../auth/[...nextauth]/options";
-import { CartItem, Order } from "@prisma/client";
+import { CartItem } from "@prisma/client";
 import prisma from "@/prisma/db";
 
 export async function POST(request: NextRequest) {
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(options);
 
@@ -113,7 +113,7 @@ export async function DELETE(request:NextRequest) {
         return NextResponse.json({success: false, message: "Theres no orders for this user."}, {status: 400});
       }
 
-      let deletedTicket = await prisma.orderItem.deleteMany({ where: {orderId: order.id, ticketId: ticketId}})
+      const deletedTicket = await prisma.orderItem.deleteMany({ where: {orderId: order.id, ticketId: ticketId}})
 
       return NextResponse.json({success: true, message: "Ticket deleted from orders!", ticket: deletedTicket})
 

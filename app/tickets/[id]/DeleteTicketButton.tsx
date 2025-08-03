@@ -33,9 +33,11 @@ export default function DeleteTicketButton({ticketId}: Props) {
             setIsDeleting(false);
             router.push("/tickets");
             router.refresh();
-        } catch (error) {
+        } catch (_error) {
             setIsDeleting(false);
             setError("Error occured!");
+            console.log(_error);
+            
         }
     }
 
