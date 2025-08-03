@@ -35,18 +35,12 @@ const cartSlice = createSlice({
 })
 
 const cartReducer = cartSlice.reducer;
-const rootReducer = combineReducers({
-    cart: cartReducer
-});
+const rootReducer = combineReducers({});
 
 export const retrieveCart = cartSlice.actions.retrieveCart;
 export const addItemToCart = cartSlice.actions.addItemToCart;
 export const deleteItemFromCart = cartSlice.actions.deleteItemFromCart;
 export const emptyCart = cartSlice.actions.emptyCart;
-
-
-export type RootStateCart = {
-  cart: ReturnType<typeof cartReducer>;
-};
+export type RootStateCart = ReturnType<typeof rootReducer>;
 
 export default cartReducer;

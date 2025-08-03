@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+
 import cartReducer from "./cartSlice";
 
 export type AppDispatch = typeof store.dispatch;

@@ -6,7 +6,7 @@ import axios from 'axios'
 import { ShoppingCart } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { retrieveCart, type RootStateCart } from '../redux/cartSlice'
+import { retrieveCart, RootStateCart } from '../redux/cartSlice'
 
 interface Props {
     userId: number | string | undefined
@@ -20,7 +20,7 @@ interface CartObj {
 export default function CartMenuIcon({userId}: Props) {
 
     const dispatch = useDispatch();
-const totalItemsInCart:number = useSelector((state: RootStateCart) => state.cart.totalItemsInCart);
+    const totalItemsInCart:number = useSelector((state: RootStateCart) => state.cartActions.totalItemsInCart);
 
 
     useEffect(() => {
